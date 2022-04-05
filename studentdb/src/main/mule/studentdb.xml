@@ -30,13 +30,13 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<foreach doc:name="For Each" doc:id="6adf2ecc-1046-4638-99fd-09b794619f80" >
-			<logger level="INFO" doc:name="Logger" doc:id="9c10052f-99d0-47ce-860b-46f4ceaa79e4" message="#[payload]"/>
+			<logger level="INFO" doc:name="Logger" doc:id="9c10052f-99d0-47ce-860b-46f4ceaa79e4" message='#[payload]'/>
 			<db:insert doc:name="Insert" doc:id="406bd485-5393-4b19-883b-4cdb7d31349b" config-ref="Database_Config">
 			<db:sql><![CDATA[insert into sys.emp 
 (empid, empname, empage, empsalary) values(:empid,:empname,:empage,:empsalary);]]></db:sql>
 			<db:input-parameters><![CDATA[#[payload]]]></db:input-parameters>
 		</db:insert>
-			<logger level="INFO" doc:name="Logger" doc:id="44744f29-240d-4665-8d0a-6e23d51a46e2" message="#[payload]"/>
+			<logger level="INFO" doc:name="Logger" doc:id="44744f29-240d-4665-8d0a-6e23d51a46e2" message='#[payload ++ "hi" as String]'/>
 		</foreach>
 	</flow>
 </mule>

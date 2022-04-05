@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="630ca83c-18d1-4cce-84ec-f46c459b2b8c" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="59f22ede-691c-45e1-a00a-c4299cd05145" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Srihani@17" database="sys" />
+	</db:config>
+	<flow name="studentdbFlow" doc:id="aeb850e0-4c6a-436a-8d9d-9c10000e4acc" >
+		<http:listener doc:name="Listener" doc:id="c99efb26-4509-4fa8-8405-007738721265" config-ref="HTTP_Listener_config" path="/student"/>
+		<ee:transform doc:name="Transform Message" doc:id="ddb704c9-5551-497c-afa1-d882ef8190d7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+1 to 10 map{
+	 empid: if($$==6)"mule" else 200+$$,
+	 empname:"pravs",
+	 empage:12,
+	 empsalary:50000
+	}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="6adf2ecc-1046-4638-99fd-09b794619f80" >
+			<logger level="INFO" doc:name="Logger" doc:id="9c10052f-99d0-47ce-860b-46f4ceaa79e4" message="#[payload]"/>
+			<db:insert doc:name="Insert" doc:id="406bd485-5393-4b19-883b-4cdb7d31349b" config-ref="Database_Config">
+			<db:sql><![CDATA[insert into sys.emp 
+(empid, empname, empage, empsalary) values(:empid,:empname,:empage,:empsalary);]]></db:sql>
+			<db:input-parameters><![CDATA[#[payload]]]></db:input-parameters>
+		</db:insert>
+		</foreach>
+	</flow>
+</mule>

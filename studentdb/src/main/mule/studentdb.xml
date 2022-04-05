@@ -36,6 +36,7 @@ output application/json
 (empid, empname, empage, empsalary) values(:empid,:empname,:empage,:empsalary);]]></db:sql>
 			<db:input-parameters><![CDATA[#[payload]]]></db:input-parameters>
 		</db:insert>
+			<logger level="INFO" doc:name="Logger" doc:id="44744f29-240d-4665-8d0a-6e23d51a46e2" message="#[payload]"/>
 		</foreach>
 	</flow>
 </mule>
